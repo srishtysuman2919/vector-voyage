@@ -10,15 +10,25 @@ This repo I built while doing the courses from Activeloop, Towards AI, and Intel
 For all the three repos, I have used same environment, packages for which are listed in requirements.txt
 
 API keys required:
+
     OPENAI_API_KEY-> https://platform.openai.com/api-keys
+
     ACTIVELOOP_TOKEN-> https://app.activeloop.ai/srishtysuman2919/home
+
     HUGGINGFACE_KEY-> https://huggingface.co/settings/tokens
+
     GOOGLE_CSE_ID-> https://console.cloud.google.com/apis/credentials
+
     GOOGLE_API_KEY-> https://console.cloud.google.com/apis/credentials
+
     COHERE_API_KEY-> https://dashboard.cohere.com/api-keys
+
     ELEVEN_API_KEY-> https://elevenlabs.io/
+
     SERPAPI_API_KEY-> https://serpapi.com/manage-api-key
+
     GITHUB_TOKEN-> https://github.com/settings/tokens
+    
     WOLFRAM_ALPHA_APPID-> https://products.wolframalpha.com/api
 
 
