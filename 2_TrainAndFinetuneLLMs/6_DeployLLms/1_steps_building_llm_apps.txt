@@ -1,0 +1,50 @@
+5 essential steps in building LLM apps
+--------------------------------------
+
+LLMops
+    1. model selection phase:
+        - choices: 
+            1. proprietry models (typically outperforms non-proprietry llms but costly)
+            2. non-proprietry/open-source models
+            3. finetuning own llm
+            4. training llm from scratch: if want own llm
+    2. adaptation phase:
+        choices:
+            1. finetuning: when want to make expert on specific on specific topic
+            2. prompting
+            3. retraining using rlhf or rlaif: powerful
+            4. RAG
+            5. deep memory: when have documentation and don't want model to hallucinate and much cheaper to finetuning
+    3. evaluation phase:
+        1. benchmarks: test model on multiple benchmarks
+        2. A/B testing
+    4. deployment phase:
+        - challenges: latency, memory, cost
+        - multistage:
+            1. cloud based APIs-> google vertex AI , amazon sagemaker
+            or
+            2. tf serve
+        - compute resource-> needs high compute power
+        - reduce model size:
+            1. model quantization: simplest
+                choices:
+                    1. bitandbytes: better for finetuning
+                    2. GPTQ: better for generation
+                merged models:
+                    1. first quantize the base mdoels using bitsandbytes
+                    2. add and finetune the adapters (LoRA)
+                    3. merge the trained adapters on top of finetuned models or wuantized models
+                    4. quantize the merged models using GPTQ and us it for deployment
+            2. model distillation
+            3. model pruning
+            4. using smaller variants    
+        - ethical concerns:
+            1. bias 
+            2. hallucination
+        - Data privacy:
+        - continuous learning process
+    5. monitoring phase:
+        1. visualize and inspect execution flow
+        2. analyze inputs and outputs
+        3. view intermediate results
+        4. securely manage prompts and llm chain configurations

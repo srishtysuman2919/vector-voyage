@@ -1,0 +1,62 @@
+Use LlamaIndex to Build an AI Shopping Assistant with RAG and Agents
+--------------------------------------------------------------------
+
+--------------------------------------------------------------------
+Problem: outfit recommendation given user query
+        1. interact with DeepLake to query
+        2. retrieve the best-matching items
+         eg; i/p-> given this picture of a dress, sugegst accessories and shoes for a business meeting 
+             o/p-> understands context and style, providing a personalized shopping experience.
+techniques: image proessing + llm Agents
+--------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------------------------------------------
+1. Data collection:
+    1. Apify: web scraping tool-> to collect product information from Walmart’s online catalog
+        return only text data; separate processes needed to download the associated images
+    2. attributes: product ID, category, price, name, and image(url)
+        used the product categories to create a new attribute gender
+    3. pandas to read the scraped JSONs and clean the collected data
+    4. gpt-4-vision-preview-> to generate a new description for each product; color, style, size, age, etc
+2. Save embeddings in vector database:
+    1. encode the text into vectors + retaining core attributes as metadata.
+    2. how to incorporate metadata in vector database? -> append product ID, name, and price into the description text
+    3. how to seperate text and image database?
+            1. established two vector databases within DeepLake
+                i. text + metadata vectors
+                ii. image vectors
+3. Development of tools:
+    1. query retriever:
+        i/p: user's query description
+        o/p: most similar items for the i/p query: (product ID, name, price)
+    2. outfit generator:
+        i/p: user's query image
+        o/p: descriptions of complementary clothing items
+        critical feature: programming the tool to omit searching for items in the same category as the uploaded image
+        process: 
+            1. generator receives i/p in the form of image
+            2. receiving detailed descriptions of potential outfit components
+            3. utilizes the query retriever to fetch products that match these descriptions
+4. System integration and initial testing:
+    1. Tool wrapping: encapsulating each function into a tool
+    2. Agent establishment: LLM agent-> leverage these tools to process user inputs and deliver recommendations
+----------------------------------------------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------------------------------------------
+Demo-> Step-by-step commands and interactions:
+1. Image upload and description generation
+   - The image can be uploaded at any point before the agent internally calls the outfit generation tool, which often happens after asking for gender.
+2. Outfit generation
+    - agent internally uses the tool to generate an outfit from the user description, image, and gender
+3. Querying the inventory
+    1. agent obtains a description for the pieces of clothing that it needs to retrieve
+    2. uses the query engine to retrieve the best matches from the vector database
+4. Final recommendation presentation
+    1. analyze the options
+    2. present best matching pairs: with item details such as price and purchase links
+
+
+
+
+
+

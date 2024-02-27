@@ -1,0 +1,20 @@
+Model Pruning
+-------------
+
+Reduces the size of a deep neural network by removing certain neurons, connections, or even entire layers. 
+benefits: faster inference times, lower memory footprint, and improved energy efficiency
+Goal: create a smaller and more efficient model while preserving its accuracy to the greatest extent possible
+
+Different Types of Model Pruning:
+    1. Magnitude-based Pruning (or Unstructured Pruning):
+        - network trimming: based on the observation that a significant number of neurons in a large network produce zero outputs, 
+                            regardless of the inputs received. These zero activation neurons are considered redundant and are removed 
+                            without impacting the overall accuracy of the network. 
+    2. Structured Pruning:
+        1. targets specific structures within the network, such as channels in convolutional layers or neurons in fully connected layers.
+        2. uses a particle filtering approach to determine the significance of network connections and paths, assigning importance based on the misclassification rate associated with each connectivity pattern
+        3. After pruning, the network is re-trained to compensate for any losses.
+    3. The Lottery Ticket Hypothesis: dense, randomly-initialized, feed-forward networks contain subnetworks (winning tickets) 
+                                      that—when trained in isolation—reach test accuracy comparable to the original network in a similar number of
+                                      iterations. The winning tickets we find have won the initialization lottery: 
+                                      their connections have initial weights that make training particularly effective.

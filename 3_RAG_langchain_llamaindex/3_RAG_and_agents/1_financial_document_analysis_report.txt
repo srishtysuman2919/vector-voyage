@@ -1,0 +1,44 @@
+Application of the Retrieval-augmented Generation (RAG) method in processing a company's financial information contained within a PDF document
+----------------------------------------------------------------------------------------------------------------------------------------------
+
+--------------------------------------
+Problem: process financial information
+Input: PDF documents
+Method used: RAG
+--------------------------------------
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------
+1. Preprocessing: extract data from pdf documents
+               1. text and tables:
+                    - unstructured.partition.pdf to extracts text and table data from the PDF and divides it into multiple chunks.
+                        - Use layout model (YOLOX) to get bounding boxes (for tables) and find titles
+                        - Post processing to aggregate text once we have the title
+                        - customize the size of these chunks based on the number of characters.
+                    - Pydantic package to create a custom Element data structure that stores information about each element, including their type and text
+                        - iterates through all extracted elements, keeping them in a list where each item is an instance of the Element type
+                        - useful in identifying the source of each answer, whether it is derived from texts, tables, or figures.
+               2. graphical information: through GPT-4V
+                    - fed slides to GPT-4V and ask for it description, then save it in textual format
+                        - Primary challenge: extracting images from the pages to feed into OpenAI's endpoint.
+                            1. Possible approach: convert the PDF to images and pass each page to the model, inquiring if it detects any graphs. 
+                               - instructs the model to describe the graphs and generate responses in JSON format, 
+                               - address scenarios like encountering multiple graphs on a single page or finding no graphs at all, through prompts.
+                               - drawback: increases the number of requests to the model , hence leading to higher costs. 
+               etc.
+2. create nodes
+3. save it in vector store (for quick information Retrieval)
+    - Deep Lake vector database: to store the collected information and their embeddings
+    - include a metadata: the data type (text, table, or graph) or denote document relationships. 
+        - simplifies the retrieval of these details later.
+    - generate embeddings for the documents 
+    - employ the database instance to store these values
+4. Activate Deep Memory (to improve retriever's accuracy)
+    - allows the model to access higher-quality data, leading to more detailed and informative responses.
+    - Process: 
+        1. fetching chunks of data from the cloud 
+        2. create specific questions for each chunk using GPT-3.5
+        3. utilized these generated in the Deep Memory training procedure to enhance the embedding quality. 
+            - use questions and the reference ids to activate the Deep Memory using the .deep_memory.train() method to improve the embedding representations.
+        4. This approach led to approx 25% enhancement in performance.
+4. create RAG enabled bot/agent to retrieve information: through LlamaIndex
+----------------------------------------------------------------------------------------------------------------------------------------------------------

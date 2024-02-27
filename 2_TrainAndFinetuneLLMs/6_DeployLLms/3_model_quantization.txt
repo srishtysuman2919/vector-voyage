@@ -1,0 +1,55 @@
+model quantization
+------------------
+
+quantization: a technique that reduces the numerical precision of model parameters, such as the weights and biases.
+
+floating point representation: sign, exponent, fabrication
+    1. fp32: 1, 8, 23 -> 3 bytes
+    2. tf32: 1, 8, 10 -> >2 bytes
+    3. fp16: 1, 5, 10 -> >2 bytes
+    4. bf16: 1, 8, 7 -> 2 bytes
+
+basic quantization techniques:
+    1. Scalar Quantization: data distribution in each dimension is considered to avoid loss of information
+        each dimension of the dataset is treated independently:
+            1. The maximum and minimum values are calculated for each dimension across the dataset.
+            2. The range between the maximum and minimum values in each dimension is then divided into equal-sized bins.
+            3. Each value in the dataset is mapped to one of these bins, effectively quantizing the data.
+            def scalar_quantisation(dataset):
+                # Calculate and store minimum and maximum across each dimension
+                # dataset: 2000x512
+                ranges = np.vstack((np.min(dataset, axis=0), np.max(dataset, axis=0))) # 2x512
+                starts = ranges[0,:] # 256
+                steps = (ranges[1,:] - starts) / 255 # 256
+                return np.uint8((dataset - starts) / steps) # 2000x256
+    2. Product Quantization: preserve more information especially when the distributions of different dimensions are diverse. 
+        divide each vector into sub-vectors and quantizing each sub-vector independently
+            1. Divide each vector in the dataset into m disjoint sub-vectors.
+            2. For each sub-vector, cluster the data into k centroids (using k-means, for example).
+            3. Replace each sub-vector with the index of the nearest centroid in the corresponding codebook.
+            # Given array
+            array = np.array([
+                [8.2, 10.3, 290.1, 278.1, 310.3, 299.9, 308.7, 289.7, 300.1],
+                [0.1, 7.3, 8.9, 9.7, 6.9, 9.55, 8.1, 8.5, 8.99]
+            ])   
+            m, k = 3, 2 # Number of subvectors and centroids
+            subvectors = array.reshape(-1, m) # Divide each vector into m disjoint sub-vectors
+            kmeans = KMeans(n_clusters=k, random_state=0).fit(subvectors) # Perform k-means on each sub-vector independently
+            labels = kmeans.labels_ # Replace each sub-vector with the index of the nearest centroid
+            quantized_array = labels.reshape(array.shape[0], -1) # Reshape labels to match the shape of the original array  
+            quantized_array # Output the quantized array
+            o/p: array([
+                [0, 1, 1],
+                [0, 0, 0]], dtype=int32)
+        Tradeoff: number of centroids, the number of sub-vectors
+                 The more centroids we use, the better the accuracy, but the memory footprint would not decrease and vice versa.
+                
+Popular (Post-Training Quantization) Methods for LLMs:
+    1. LLM.int8(): 8-bit Matrix Multiplication for Transformers at Scale
+        - activation outliers break the quantization of larger models and proposes keeping them in higher precision. 
+        - By keeping doing that, the performance of the model is not negatively affected. 
+    2. GPTQ: Accurate Post-Training Quantization for Generative Pre-trained Transformers
+        - The quantization is done layer by layer, minimizing the mean squared error (MSE) between the quantized and full-precision weights when given an input. 
+        - The algorithm uses a mixed int4-fp16 quantization scheme where weights are quantized as int4 while activations remain in float16. 
+    3. AWQ: Activation-aware Weight Quantization for LLM Compression and Acceleration
+        - selects these salient weights, quantization of which, if skipped, can substantially mitigate quantization loss. based on the magnitude of their activations

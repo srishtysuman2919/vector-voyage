@@ -1,0 +1,42 @@
+RAG - Metrics & Evaluation
+--------------------------
+
+Holistic: relating to or concerned with wholes or with complete systems rather than with the individual parts
+The holistic modules don't always need ground-truth labels, as they can be evaluated based on the query, context, response, and LLM interpretations
+
+RAG system evaluation: detailed assessment of individual components and the system.
+    1. Setting the baseline values for elements like chunking logic and embedding models
+    2. examining each part independently and in an end-to-end manner
+
+RAG metrics:
+    1. Correctness: 
+        * evaluate the relevance and correctness of a generated answer against a reference answer.
+        * accuracy of the generated answer is verified by comparing it directly to a reference answer provided for the question.
+    2. Faithfulness: 
+        * evaluates the integrity of the answer
+        * Determines if the answer is accurate and doesn't contain fabrication, relative to the retrieved contexts.
+        FaithfulnessEvaluator: evaluates whether response is faithful to the contexts.
+            i/p: 
+                1. response string: 
+                2. list of context strings: context provides the necessary environment and parameters for the language model to function.
+            o/p: boolean indicating whether it passes the test or not
+    3. Context Relevancy:
+        * Measures the relevance of the retrieved context and the resulting answer to the original query.
+        * ensures that the system only retrieves information in a way that is pertinent to the user's request.
+    4. Guideline Adherence:
+        * Determines if the predicted answer follows a set of guidelines
+        * whether the response meets predefined criteria, encompassing stylistic, factual, and ethical standards
+    5. Embedding Semantic Similarity:
+        * Calculates the similarity score between embeddings of the generated answer and the reference answer (reference labels required). 
+
+Retrieval Evaluation:
+(determining the relevance of documents to specific queries.)
+    METRICS:
+        1. MRR: measures the retrieval system's ability to return the best result as high up in the ranking as possible
+        2. Hit Rate: evaluates the presence of relevant items within the top results returned, which is crucial where users only consider the first few results.
+        3. MAP (Mean Average Precision): average precision is computed as the mean of the precision scores after each relevant document is retrieved.
+        4. NDCG (Normalized Discounted Cumulative Gain): evaluates the ranking of documents based on their relevance, giving more importance to relevant documents that appear higher in the ranking.
+    EVALUATION: For any given question, compare the quality of retrieved results from the ground-truth context.
+        1. Dataset Creation for evaluation: (contents, questions, nodes)
+            - can use existing datasets, eg; Golden Context dataset-  'question' and 'source' pairings. 
+            https://github.com/microsoft/promptflow-resource-hub/blob/main/sample_gallery/golden_dataset/copilot-golden-dataset-creation-guidance.md

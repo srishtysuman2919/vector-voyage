@@ -1,0 +1,49 @@
+A Retrieval Engine to Search & Generate Patents: LLM-enabled approach to leveraging and search/retrieval of the US patent corpus
+--------------------------------------------------------------------------------------------------------------------------------
+
+Features: 
+    1. Autocomplete
+    2. Patent search on abstract
+    3. Patent search on claims
+    4. Abstract generation
+    5. Claim generation
+    6. General chat
+
+    High-level system design: User_Chat-> Meta_Agent-----> General chat
+                                                    \____> Claim generation
+                                                    \____> Abstract generation
+                                                    \____> Patent search on claims
+                                                    \____> Patent search on abstract
+                               Autocomplete          
+
+Technical Architecture:
+    - ensemble of finetuned LLM models and search indices
+    1. domain train a base LLM on the patent corpus of text-> for autocomplete and search based APIs
+    2. finetue domain-trained llm (using PEFT eg; LoRA): for generaton and chat based APIs
+
+Dataset:
+    1. USPTO dataset: 
+        * 8 million patents
+        * fields - title, classification, publication_date, abstract, description, claims , etc.
+        * 40 billion words
+        * 350 GB text file
+Domain Training:
+    1. Tokenizing: 18 hours on 8 HPU machine
+    2. Deep Lake performant dataloader to stream data loading into our model
+    3. CLM objective using the Optimum library from Huggingface
+    4. training: 24 days
+    * Used our domain-trained LLM for the autocompletion API as is
+    * Used the domain-trained LLM as a base for our downstream finetuning.
+Finetuning Generation Models: for abstracts and claims lists
+    1. Dataset: description by abstract and claims 
+    2. finetune: LoRA
+Finetuning General Chat:
+    fine-tune the chat to keep the general patent knowledge learned from our domain training routine
+Creating Custom Featurizers: to set up search APIs
+    pull out the representations from the last hidden layer: more robust in practice than general sentence embedders
+Standing up Search Indices:
+Deploying LLM Inference APIs:
+
+
+
+

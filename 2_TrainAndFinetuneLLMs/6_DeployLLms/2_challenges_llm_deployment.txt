@@ -1,0 +1,22 @@
+Challenges in LLM deployment
+----------------------------
+
+challenges of deploying Large Language Models:
+    - factors:
+        1. latency:
+            acceptable latency: 100ms-200ms
+        2. memory: LLMs memory demanding due to complex Architecture
+            solution: 
+                1. quantization: 
+                    - compress neural network models by lowering the precision of model parameters and/or activations
+                    - leverages low-bit precision arithmetic and decreases the size, latency, and energy consumption
+                    - tradeoff: performance gains through reduced precision and maintaining model accuracy
+                2. pruning:
+                    1. weight pruning:
+                        1. structured pruning: imposes an additional constraint on the sparsity pattern.
+                        2. unstructured pruning: allows any sparsity pattern
+                    2. activation pruning:
+                        1. prunes redundant activations during inference
+                        2. requires support to detect and zero out unimportant activations at run-time dynamically
+                3. knowledge distillation:
+                    
