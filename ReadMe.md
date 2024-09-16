@@ -13,7 +13,7 @@ API keys required:
 
     OPENAI_API_KEY-> https://platform.openai.com/api-keys
 
-    ACTIVELOOP_TOKEN-> https://app.activeloop.ai/srishtysuman2919/home
+    ACTIVELOOP_TOKEN-> https://app.activeloop.ai/{username}/home
 
     HUGGINGFACE_KEY-> https://huggingface.co/settings/tokens
 
